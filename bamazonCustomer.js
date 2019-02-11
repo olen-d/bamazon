@@ -98,19 +98,25 @@ const bzCustomer = {
             {
             type: "input",
             message: "\x1b[32mPlease enter the quantity you would like to buy:\x1b[0m",
-            name: "productQty"
+            name: "productQty",
+            validate: (v) => {
+                if (v > 0) {
+                    return true;
+                 } else {
+                     return "\n\x1b[31mYou have to purchase at least one item.\x1b[0m\n";
+                } 
+                }
             }
         ])
         .then((res) => {
             if (res) {
                 let qtyToBuy = parseInt(res.productQty);
-
                 // Check to see if the store has enough of the item available
                 connection.query("SELECT stock_quantity FROM products WHERE ?", {"id": pid}, (err, res) => {
                     if (err) throw err;
                     let qtyInStock = res[0].stock_quantity;
                     if(qtyToBuy > qtyInStock) {
-                        console.log(`\n\x1b[31mWe do not have enough items to fulfill your order.\x1b[0m\n`);
+                        
                         // Ask if customer would like to buy all remaining items
                         inquirer
                         .prompt ([
@@ -127,7 +133,7 @@ const bzCustomer = {
                                 bzCustomer.makePurchase(pid,qtyInStock,qtyToBuy);
                             } else {
                                 // Decline, go back to start
-                                bzCustomer.getProduct();
+                                bzCustomer.displayProducts();
                             }
                         });
                     } else {
