@@ -32,7 +32,7 @@ const bzCustomer = {
 
         console.log("Products for sale\n");
 
-        connection.query("SELECT * FROM products", (err, res) => {
+        connection.query("SELECT * FROM products WHERE stock_quantity > 0", (err, res) => {
             if (err) throw err;
             // Log all results of the SELECT statement
             console.log(
@@ -73,16 +73,19 @@ const bzCustomer = {
             {
             type: "input",
             message: "\x1b[32mPlease enter the ID of the product you would like to buy:\x1b[0m",
-            name: "productToBuy"
+            name: "productToBuy",
+            validate: (v) => {
+                if(bzCustomer.validPids.indexOf(parseInt(v)) === -1) {
+                    return `\n\x1b[31m${v} is not a valid product ID. Please try again.\x1b[0m\n`;
+                } else {
+                    return true;
+                }
+                }
             }
         ])
         .then((res) => {
             if (res) {
                 let pid = parseInt(res.productToBuy);
-                if(bzCustomer.validPids.indexOf(pid) === -1) {
-                    console.log(`\n\x1b[31m${pid} is not a valid product ID. Please try again.\x1b[0m\n`);
-                    bzCustomer.getProduct();
-                }
                 bzCustomer.getQuantity(pid);
             }
             else {
@@ -170,7 +173,7 @@ const bzCustomer = {
         query = connection.query(
             "SELECT price FROM products WHERE ?", {"id": pid}, (err, res) => {
                 let totalPurchase = res[0].price * qtyToBuy;
-                console.log(`\x1b[36mThank you for shopping with Bamazon. Your total cost is: $${totalPurchase}\x1b[0m`);
+                console.log(`\x1b[36mThank you for shopping with Bamazon. Your total cost is: $${totalPurchase.toFixed(2)}\x1b[0m`);
                 connection.end();
             }
         )
