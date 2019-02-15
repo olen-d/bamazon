@@ -1,4 +1,6 @@
 // Challenge #1
+require("dotenv").config();
+
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 
@@ -13,7 +15,7 @@ const connection = mysql.createConnection({
     user: "Olen",
 
     // Your password
-    password: "cheeseBurger99!",
+    password: process.env.DBPASS,
     database: "bamazon"
 });
 
@@ -33,7 +35,8 @@ const bzManager = {
             "View Products for Sale", 
             "View Low Inventory", 
             "Add to Inventory", 
-            "Add New Product"
+            "Add New Product",
+            "Quit"
         ];
 
         inquirer
@@ -65,6 +68,11 @@ const bzManager = {
                             // Add a new product
                             bzManager.newProduct();
                         break;
+                            case manageMenuChoices[4]:
+                            // Quit - I got tired of typing Ctrl + C
+                            connection.end();
+                            break;
+                            
                     }
                 }
                 else {
@@ -193,6 +201,7 @@ const bzManager = {
                     } else {
                         console.log("500: Internal Server Error. Please try again later.");
                     }
+                    bzManager.showMenu(); 
                 });
             } else {
                 console.log("500: Internal Server Error. Please try again later.");
@@ -215,7 +224,7 @@ const bzManager = {
             (err, res) => {
                 if (err) throw err;
                 //console.log(res.affectedRows + " products updated!\n");
-        });    
+        });   
     },
 
     newProduct() {
@@ -284,24 +293,13 @@ const bzManager = {
                     (err, res) => {
                         if (err) throw err;
                     console.log(res.affectedRows + " product inserted!\n");
-                    // Call updateProduct AFTER the INSERT completes
-                    // updateProduct();
                     }
-                );
-        
-                // logs the actual query being run
-               // console.log(query.sql);               
+                );     
             } else {
                 console.log("500: Internal Server Error. Please try again later.")
             }
+            bzManager.showMenu();
         });
-        
-
-
-
-
-
-        
     }
 }
 

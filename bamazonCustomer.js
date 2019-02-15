@@ -1,6 +1,9 @@
 // Challenge #1
+require("dotenv").config();
+
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+
 
 // Create the database connection
 const connection = mysql.createConnection({
@@ -13,7 +16,7 @@ const connection = mysql.createConnection({
     user: "Olen",
 
     // Your password
-    password: "cheeseBurger99!",
+    password: process.env.DBPASS,
     database: "bamazon"
 });
 

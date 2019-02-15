@@ -9,4 +9,4 @@ CREATE TABLE products (
     department_name VARCHAR(255),
     price FLOAT,
     stock_quantity INT
-)
+);

@@ -55,4 +55,9 @@ INSERT INTO products (
     'Printers',
     59.99,
     50
-)
+), (
+    'Amazfit Verge Smartwatch by Huami with GPS+ GLONASS All-Day Heart Rate and Activity Tracking',
+    'Wearables',
+    159.99,
+    45
+);
